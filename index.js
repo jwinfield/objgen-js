@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 //! objgen.js
-//! version : 4.0.0
+//! version : 4.0.1
 //! authors : Jim Winfield, objgen.js contributors
 //! license : AGPL-3.0
 //! objgen.com
@@ -15,7 +15,7 @@ var cli = require('commander');
 var fs = require('fs');
 
 cli
-  .version('4.0.0')
+  .version('4.0.1')
   .option('-d, --demo', 'Run the demo')
   .option('-f, --file <path>', 'Input model filename to generate')
   .parse(process.argv);

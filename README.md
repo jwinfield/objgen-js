@@ -116,8 +116,8 @@ will generate:
 ## Installation
 
 1. Get [node](https://nodejs.org)
-2. `npm install -g objgen`
-3. Check installation
+2. `npm install objgen --save` or globally with `npm install -g objgen` for command line usage
+3. Verify `-g` installation
 
 ```sh
 $ objgen --version
@@ -126,7 +126,31 @@ $ objgen --version
 
 ## Usage
 
-1. Run the JSON generation demo
+### JavaScript - Calling the JSON Generator
+
+```js
+var ObjGen = require('./objgen.js').ObjGen;
+
+var model = "id n = 100\n" +
+  "title = Welcome to New York\n" +
+  "releaseDate d = 2017-02-10";
+
+var json = ObjGen.xJson(model, {numSpaces: 2});
+
+console.log(json);
+```
+
+generates:
+
+```js
+{
+  "id": 100,
+  "title": "Welcome to New York",
+  "releaseDate": "2017-02-10T00:00:00.000Z"
+}
+```
+
+### Command line - Run the JSON generation demo
 
 ```sh
 $ objgen -d
@@ -207,7 +231,7 @@ Generated JSON:
 }
 ```
 
-2. Generate JSON from your own model files:
+### Command line - Generate JSON from your own model files:
 
 ```sh
 $ objgen -f my-model.txt

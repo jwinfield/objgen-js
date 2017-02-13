@@ -1,6 +1,6 @@
 {
   "name": "objgen",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "ObjGen Node.js package",
   "main": "index.js",
   "bin": {

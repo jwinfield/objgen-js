@@ -249,13 +249,16 @@ var ObjGen = function() {};
   };
 
   ObjGen.xJson = function(val, options) {
-    var numSpaces = 2;
     var propStack = [];
     var model = {};
     var genRoot = {};
 
-    if(!isDefined(options) && !isDefined(options.numSpaces)) {
-      numSpaces = options.numSpaces;
+    if(!isDefined(options)) {
+      options = {
+        numSpaces: 2
+      };
+    } else if(!isDefined(options.numSpaces)) {
+      options.numSpaces = 2;
     }
 
     // parse the raw inbound lines, to find individual input lines
@@ -404,7 +407,7 @@ var ObjGen = function() {};
 
     });
 
-    return JSON.stringify(genRoot, undefined, numSpaces);
+    return JSON.stringify(genRoot, undefined, options.numSpaces);
   };
 
   if(typeof module !== 'undefined' && module.exports) {
