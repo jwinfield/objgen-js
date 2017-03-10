@@ -6,6 +6,10 @@
 
 var ObjGen = function() {};
 
+if(typeof(require) !== 'undefined') {
+  is = require('is_js');
+}
+
 (function() {
   'use strict';
 
@@ -137,7 +141,6 @@ var ObjGen = function() {};
 
         // count and process lines with real values
         var lineText = raw.replace(ObjGen.spacesRegx, '');
-        lineText = lineText.replace(/\[|]/g, '');
         if(lineText.length > 0) {
           lines++;
         }
@@ -250,6 +253,7 @@ var ObjGen = function() {};
 
   ObjGen.xJson = function(val, options) {
     var propStack = [];
+    var arrays = {};
     var model = {};
     var genRoot = {};
 
@@ -291,9 +295,6 @@ var ObjGen = function() {};
       if(isArray) {
         if(arrayInfo.length > 1) {
           arrayIndex = parseInt(arrayInfo[1]);
-        }
-        if(isNaN(arrayIndex)) {
-          arrayIndex = 0;
         }
       }
 
@@ -356,7 +357,16 @@ var ObjGen = function() {};
         propKey += propStack[k];
       }
 
-      if(arrayIndex > -1) {
+      if(isArray) {
+        var arr = arrays.hasOwnProperty(propKey) ? arrays[propKey] : { name: prop, length: 0 };
+
+        if(arrayIndex < 0 || isNaN(arrayIndex)) {
+          arrayIndex = arr.length;
+        }
+
+        arr.length += 1;
+        arrays[propKey] = arr;
+
         var idx = ':' + arrayIndex;
         propKey += idx;
         propStack[level] += idx;
@@ -385,7 +395,8 @@ var ObjGen = function() {};
           if(!isDefined(curProp.genParent)) {
             curProp.genParent = [];
           }
-          if(curProp.genParent.length < modelParent.index + 1) {
+          if((curProp.genParent.length < modelParent.index + 1) ||
+            (is.array(curProp.genParent[modelParent.index]) && is.empty(curProp.genParent[modelParent.index]))) {
             curProp.genParent[modelParent.index] = {};
           }
           curProp.genParent = curProp.genParent[modelParent.index];

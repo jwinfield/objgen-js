@@ -25,11 +25,34 @@ describe('ObjGen', function() {
       assert.deepEqual(strings, JSON.parse(ObjGen.xJson(model)));
     });
 
-    it('should generate an array of objects', function() {
+    it('should generate an array of objects using explicit indicies', function() {
       var model = 'a[0]\n' +
         '  id n = 1\n' +
         '  name = one\n' +
         'a[1]\n' +
+        '  id n = 2\n' +
+        '  name = two\n';
+
+      var objects = {
+        a: [
+        {
+          id: 1,
+          name: 'one'
+        },
+        {
+          id: 2,
+          name: 'two'
+        }]
+      };
+
+      assert.deepEqual(objects, JSON.parse(ObjGen.xJson(model)));
+    });
+
+    it('should generate an array of objects using implied indicies', function() {
+      var model = 'a[]\n' +
+        '  id n = 1\n' +
+        '  name = one\n' +
+        'a[]\n' +
         '  id n = 2\n' +
         '  name = two\n';
 
