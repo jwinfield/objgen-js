@@ -94,7 +94,7 @@ if(typeof(require) !== 'undefined') {
   ObjGen.rawLineRegx = new RegExp('^.*$|\n|$', 'g');
   ObjGen.newLineRegx = new RegExp('\n');
   ObjGen.spacesRegx = new RegExp('\\s');
-  ObjGen.arrayRegx = new RegExp('\\[\\s*\\]|\\[\\s*([0-9]{1,100})\\s*\\]');
+  ObjGen.arrayRegx = new RegExp('\\[\\s*?([0-9]{1,100})?\\s*?\\]');
   ObjGen.typesRegx = new RegExp('^(\\w+)(\\s+)(\\w+).*?$');
 
   ObjGen.parseLines = function(val, options, callback) {
@@ -281,20 +281,29 @@ if(typeof(require) !== 'undefined') {
 
       // Determine the data type being defined at this line level
       var level = depth - 1;
-      var typeSearch = ObjGen.typesRegx.exec(line.replace(ObjGen.arrayRegx, ''));
-      var type = null;
-
-      if(typeSearch !== null && typeSearch.length >= 4) {
-        type = typeSearch[3].toLowerCase();
-      }
-
       var arrayInfo = ObjGen.arrayRegx.exec(line);
       var isArray = arrayInfo !== null ? arrayInfo.length > 0 : false;
       var arrayIndex = -1;
+      var rootArray = false;
 
       if(isArray) {
+        if(level === 0 && line.match(/^\s*?\[.*?$/)) {
+          rootArray = true;
+        }
+
         if(arrayInfo.length > 1) {
           arrayIndex = parseInt(arrayInfo[1]);
+        }
+      }
+
+      var type = null;
+
+      if(rootArray === true) {
+        type = 'object';
+      } else {
+        var typeSearch = ObjGen.typesRegx.exec(line.replace(ObjGen.arrayRegx, ''));
+        if(typeSearch !== null && typeSearch.length >= 4) {
+          type = typeSearch[3].toLowerCase();
         }
       }
 
@@ -344,7 +353,7 @@ if(typeof(require) !== 'undefined') {
 
       // clean up prop name
       prop = prop.replace(ObjGen.spacesRegx, '');
-      prop = prop.replace(ObjGen.arrayRegx, '');
+      prop = rootArray ? '[]' : prop.replace(ObjGen.arrayRegx, '');
       prop = prop.replace(/\[.*|]/g, '');
       propStack[level] = prop;
 
@@ -374,6 +383,10 @@ if(typeof(require) !== 'undefined') {
 
       // represent model information
       if(!isDefined(model[propKey])) {
+        if(rootArray && arrayIndex === 0) {
+          genRoot = initialVal;
+        }
+
         var parentKey = propKey.substring(0, propKey.lastIndexOf('.'));
         model[propKey] = {
             name: prop,
@@ -405,6 +418,10 @@ if(typeof(require) !== 'undefined') {
         }
       }
 
+      if(rootArray && level === 0 && arrayIndex > 0) {
+        genRoot[arrayIndex] = {};
+      }
+
       if(curProp.array && arrayIndex > 0) {
         if(!isDefined(curProp.genParent[prop])) {
           curProp.genParent[prop] = [];
@@ -415,7 +432,6 @@ if(typeof(require) !== 'undefined') {
       } else {
         curProp.genParent[prop] = curProp.val;
       }
-
     });
 
     return JSON.stringify(genRoot, undefined, options.numSpaces);
