@@ -37,46 +37,6 @@ will generate:
 }
 ```
 
-Arrays are defined by using bracket syntax '[]'. For example:
-
-```
-id n = 12123434
-name = Joe Rightsman
-address[0]
-  street=100 East Main Street
-  city=Southernville
-  state=NY
-  zip=19910
-address[1]
-  street=100 West Birch Lane
-  city=Northnville
-  state=NY
-  zip=19911
-```
-
-will generate:
-
-```js
-{
-  "id": 12123434,
-  "name": "Joe Rightsman",
-  "address": [
-    {
-      "street": "100 East Main Street",
-      "city": "Southernville",
-      "state": "NY",
-      "zip": "19910"
-    },
-    {
-      "street": "100 West Birch Lane",
-      "city": "Northnville",
-      "state": "NY",
-      "zip": "19911"
-    }
-  ]
-}
-```
-
 Assignments are defined by using the equal sign '='. For example:
 
 ```
@@ -111,6 +71,79 @@ will generate:
   "name": "Dave Kingman",
   "dateOfBirth": "2112-12-21T05:00:00.000Z"
 }
+```
+
+Arrays are defined by using brackets '[]', with indices optional. For example:
+
+```
+id n = 12123434
+name = Joe Rightsman
+address[]
+  street=100 East Main Street
+  city=Southernville
+  state=NY
+  zip=19910
+address[]
+  street=100 West Birch Lane
+  city=Northnville
+  state=NY
+  zip=19911
+```
+
+will generate:
+
+```js
+{
+  "id": 12123434,
+  "name": "Joe Rightsman",
+  "address": [
+    {
+      "street": "100 East Main Street",
+      "city": "Southernville",
+      "state": "NY",
+      "zip": "19910"
+    },
+    {
+      "street": "100 West Birch Lane",
+      "city": "Northnville",
+      "state": "NY",
+      "zip": "19911"
+    }
+  ]
+}
+```
+
+A JSON array object can be generated using the following syntax:
+
+```
+[]
+  id n = 1
+  name = value 1
+[]
+  id n = 2
+  name = value 2
+[]
+  id n = 3
+  name = value 3
+```
+
+will generate:
+
+```js
+[
+  {
+    "id": 1,
+    "name": "value 1"
+  },
+  {
+    "id": 2,
+    "name": "value 2"
+  },
+  {
+    "id": 3,
+    "name": "value 3"
+  }
+]
 ```
 
 ## Installation
