@@ -19,6 +19,14 @@ describe('ObjGen', function() {
       assert.deepEqual(JSON.parse(ObjGen.xJson(model)), simple);
     });
 
+    it('should generate a JSON object that uses _dots_ in prop names', function() {
+      var dots = {
+        "this.that": "xxx"
+      };
+
+      assert.deepEqual(JSON.parse(ObjGen.xJson('this.that s = xxx')), dots);
+    });
+
     it('should generate an array of strings', function() {
       var model = 'a[] = 1, 2, 3';
       var strings = { a: ['1','2','3']};
