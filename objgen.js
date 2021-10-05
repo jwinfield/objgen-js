@@ -1,5 +1,5 @@
 //! objgen.js
-//! version : 4.0
+//! version : 4.0.4
 //! authors : Jim Winfield, objgen.js contributors
 //! license : AGPL-3.0
 //! objgen.com
@@ -256,6 +256,7 @@ if(typeof(require) !== 'undefined') {
     var arrays = {};
     var model = {};
     var genRoot = {};
+    var keysep = '__keysep__';
 
     if(!isDefined(options)) {
       options = {
@@ -286,7 +287,7 @@ if(typeof(require) !== 'undefined') {
       var arrayIndex = -1;
       var rootArray = false;
 
-      if(isArray) {
+      if(isArray === true) {
         if(level === 0 && line.match(/^\s*?\[.*?$/)) {
           rootArray = true;
         }
@@ -322,7 +323,7 @@ if(typeof(require) !== 'undefined') {
         line = line.substr(0, eqs);
       } else {
         // Create a default initial value
-        if(isArray) {
+        if(isArray === true) {
           if(arrayIndex > 0) {
             initialVal = {};
           } else {
@@ -337,7 +338,7 @@ if(typeof(require) !== 'undefined') {
       var prop = line;
 
       if(type !== null) {
-        if(isArray) {
+        if(isArray === true) {
           initialVal = ObjGen.newArrayOfType(type, initialVal);
         } else {
           initialVal = ObjGen.newValueOfType(type, initialVal);
@@ -361,12 +362,12 @@ if(typeof(require) !== 'undefined') {
       var propKey = '';
       for(var k = 0; k < propStack.length; k++) {
         if(k > 0) {
-          propKey += '.';
+          propKey += keysep;
         }
         propKey += propStack[k];
       }
 
-      if(isArray) {
+      if(isArray === true) {
         var arr = arrays.hasOwnProperty(propKey) ? arrays[propKey] : { name: prop, length: 0 };
 
         if(arrayIndex < 0 || isNaN(arrayIndex)) {
@@ -383,11 +384,11 @@ if(typeof(require) !== 'undefined') {
 
       // represent model information
       if(!isDefined(model[propKey])) {
-        if(rootArray && arrayIndex === 0) {
+        if(rootArray === true && arrayIndex === 0) {
           genRoot = initialVal;
         }
 
-        var parentKey = propKey.substring(0, propKey.lastIndexOf('.'));
+        var parentKey = propKey.substring(0, propKey.lastIndexOf(keysep));
         model[propKey] = {
             name: prop,
             type: type,

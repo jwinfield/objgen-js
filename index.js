@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 //! objgen.js
-//! version : 4.0.1
+//! version : 4.0.4
 //! authors : Jim Winfield, objgen.js contributors
 //! license : AGPL-3.0
 //! objgen.com
